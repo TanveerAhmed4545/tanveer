@@ -1,0 +1,505 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-dm-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  /* Portfolio palette — warm off-white paper + deep ink black + vivid orange accent
+     Inspired by mohamedshehata.net + kvs.services hybrid */
+  --background: #f0efeb;             /* warm paper */
+  --foreground: #111111;             /* deep ink */
+  --card: #ffffff;
+  --card-foreground: #111111;
+  --popover: #ffffff;
+  --popover-foreground: #111111;
+  --primary: #111111;
+  --primary-foreground: #f0efeb;
+  --secondary: #e7e5df;
+  --secondary-foreground: #111111;
+  --muted: #e7e5df;
+  --muted-foreground: #6b6b6b;
+  --accent: #FF5500;                 /* KVS vivid orange */
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: rgba(17, 17, 17, 0.1);
+  --input: rgba(17, 17, 17, 0.1);
+  --ring: #FF5500;
+  --chart-1: #FF5500;
+  --chart-2: #111111;
+  --chart-3: #6b6b6b;
+  --chart-4: #adff4c;
+  --chart-5: #e84020;
+  --sidebar: #f0efeb;
+  --sidebar-foreground: #111111;
+  --sidebar-primary: #111111;
+  --sidebar-primary-foreground: #f0efeb;
+  --sidebar-accent: #FF5500;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgba(17, 17, 17, 0.1);
+  --sidebar-ring: #FF5500;
+
+  /* Portfolio-specific tokens */
+  --paper: #f0efeb;
+  --ink: #111111;
+  --ink-soft: #1a1a1a;
+  --orange: #FF5500;
+  --orange-soft: rgba(255, 85, 0, 0.92);
+  --warm-white: #faf9f6;
+  --mid-gray: #888888;
+  --lime: #adff4c;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #f0efeb;
+  --card: #111111;
+  --card-foreground: #f0efeb;
+  --popover: #111111;
+  --popover-foreground: #f0efeb;
+  --primary: #f0efeb;
+  --primary-foreground: #111111;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #f0efeb;
+  --muted: #1a1a1a;
+  --muted-foreground: #999999;
+  --accent: #FF5500;
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #FF5500;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: var(--orange);
+    color: #ffffff;
+  }
+}
+
+/* ============================================
+   PORTFOLIO DESIGN SYSTEM — utility classes
+   ============================================ */
+
+/* Eyebrow / mono labels — DM Mono uppercase with letter-spacing */
+.eyebrow {
+  font-family: var(--font-dm-mono), ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--orange);
+}
+
+.eyebrow-muted {
+  font-family: var(--font-dm-mono), ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--mid-gray);
+}
+
+/* Display headings — Space Grotesk, tight letter-spacing */
+.display-xl {
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  font-size: clamp(2.75rem, 9vw, 7.5rem);
+}
+
+.display-lg {
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+.display-md {
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.body-lg {
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-weight: 400;
+  font-size: clamp(1rem, 1.2vw, 1.25rem);
+  line-height: 1.6;
+  color: rgba(17, 17, 17, 0.75);
+}
+
+.mono-tag {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Brace-wrapped tags — KVS style */
+.brace-tag {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid rgba(17, 17, 17, 0.15);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #111111;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.brace-tag:hover {
+  background: var(--orange);
+  color: #ffffff;
+  border-color: var(--orange);
+  transform: translateY(-2px);
+}
+
+/* Glassmorphic nav pill — Shehata style */
+.nav-pill {
+  background: rgba(17, 17, 17, 0.7);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+}
+
+.nav-link {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(240, 239, 235, 0.7);
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  white-space: nowrap;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+}
+
+.nav-link.active {
+  color: #ffffff;
+  background: var(--orange);
+}
+
+/* Section dividers */
+.section-divider {
+  border-top: 1px solid rgba(17, 17, 17, 0.1);
+}
+
+/* Alternating section backgrounds */
+.section-paper {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.section-ink {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.section-ink .body-lg {
+  color: rgba(240, 239, 235, 0.7);
+}
+
+.section-ink .eyebrow-muted {
+  color: rgba(240, 239, 235, 0.5);
+}
+
+/* Numbered list marker — Shehata style */
+.numbered-marker {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  color: var(--orange);
+  font-weight: 500;
+}
+
+/* Metric counter — large display number */
+.metric-number {
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-weight: 700;
+  font-size: clamp(3rem, 8vw, 7rem);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.section-ink .metric-number {
+  color: var(--paper);
+}
+
+/* Custom cursor */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--orange);
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), width 0.2s ease, height 0.2s ease;
+  transform: translate(-50%, -50%);
+}
+
+.custom-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--orange);
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+  opacity: 0.7;
+}
+
+@media (hover: none) {
+  .custom-cursor,
+  .custom-cursor-ring {
+    display: none;
+  }
+}
+
+/* Marquee animation — KVS style */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.marquee-track-reverse {
+  animation-direction: reverse;
+}
+
+/* Scroll bob hint */
+@keyframes scrollBob {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 1;
+  }
+}
+
+.scroll-bob {
+  animation: scrollBob 2s ease-in-out infinite;
+}
+
+/* Live status pulse — Shehata style */
+@keyframes livePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 85, 0, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 0 12px rgba(255, 85, 0, 0);
+  }
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: livePulse 2s ease-out infinite;
+  display: inline-block;
+}
+
+/* Project card hover — image zoom + overlay */
+.project-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0;
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.project-card .project-image {
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s ease;
+  filter: grayscale(20%) contrast(1.05);
+}
+
+.project-card:hover .project-image {
+  transform: scale(1.05);
+  filter: grayscale(0%) contrast(1.1);
+}
+
+.project-card .project-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, transparent 50%, rgba(17, 17, 17, 0.85) 100%);
+  pointer-events: none;
+}
+
+/* Hero name entrance — Lesse style word-by-word reveal */
+@keyframes heroWordIn {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.hero-word > span {
+  display: inline-block;
+  animation: heroWordIn 0.9s cubic-bezier(0.76, 0, 0.24, 1) both;
+}
+
+/* Image wrapper with grain effect for premium feel */
+.img-grain {
+  position: relative;
+}
+
+.img-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.08;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* Hide scrollbar but allow scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Sticky footer support */
+.portfolio-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Section base padding */
+.section-pad {
+  padding-left: clamp(1.25rem, 5vw, 5rem);
+  padding-right: clamp(1.25rem, 5vw, 5rem);
+  padding-top: clamp(4rem, 10vw, 8rem);
+  padding-bottom: clamp(4rem, 10vw, 8rem);
+}
+
+/* Custom scrollbar (global) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--paper);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ink);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--orange);
+}

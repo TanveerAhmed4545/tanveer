@@ -1,0 +1,32 @@
+🚀 Initializing Z-AI SDK...
+🔎 Searching images: "travel booking website hero destination cards modern web design"
+✅ Got 3 images
+{
+  "success": true,
+  "query": "travel booking website hero destination cards modern web design",
+  "count": 3,
+  "ranked": false,
+  "results": [
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/16d54bbc4f37.png",
+      "caption": "",
+      "source": "Figma",
+      "original_width": "1920px",
+      "original_height": "1080px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/8c8e621f0505.png",
+      "caption": "",
+      "source": "Code and Theory",
+      "original_width": "2000px",
+      "original_height": "1340px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/797ebf10f4a7.jpg",
+      "caption": "",
+      "source": "Astra Theme",
+      "original_width": "600px",
+      "original_height": "2858px"
+    }
+  ]
+}

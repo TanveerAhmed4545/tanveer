@@ -1,0 +1,46 @@
+🚀 Initializing Z-AI SDK...
+🔎 Searching images: "professional male software developer portrait headshot dark background studio"
+✅ Got 5 images
+{
+  "success": true,
+  "query": "professional male software developer portrait headshot dark background studio",
+  "count": 5,
+  "ranked": false,
+  "results": [
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/55d53e9cb0f9.png",
+      "caption": "",
+      "source": "ZDNET",
+      "original_width": "1280px",
+      "original_height": "720px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/16bb7d19ac0d.jpg",
+      "caption": "",
+      "source": "AI Action Letter - Substack",
+      "original_width": "2048px",
+      "original_height": "2048px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/85175a822e9b.jpg",
+      "caption": "",
+      "source": "www.headshotsandcorporate.com",
+      "original_width": "900px",
+      "original_height": "900px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/60e1d5bf7005.jpg",
+      "caption": "",
+      "source": "PicFixer",
+      "original_width": "1536px",
+      "original_height": "1024px"
+    },
+    {
+      "original_url": "https://sfile.chatglm.cn/images-ppt/e69ede66ee89.jpg",
+      "caption": "",
+      "source": "Alamy",
+      "original_width": "1300px",
+      "original_height": "980px"
+    }
+  ]
+}
