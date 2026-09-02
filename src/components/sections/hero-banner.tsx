@@ -83,11 +83,12 @@ export function HeroBanner() {
       <div className="relative z-20 w-full max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-2">
 
         {/* Left Side */}
-        <div className="relative flex flex-col justify-center px-6 pt-24 sm:pt-32 pb-[52vh] sm:pb-[45vh] lg:pb-0 lg:py-0">
+        <div className="relative flex flex-col justify-center px-6 lg:pr-8 xl:pr-12 pt-24 sm:pt-32 pb-[52vh] sm:pb-[45vh] lg:pb-0 lg:py-0 lg:overflow-hidden">
           <div className="space-y-8 lg:space-y-16">
             {/* Main Heading */}
-            <h1 className="hero-heading text-[12vw] min-[400px]:text-[3.5rem] sm:text-[5.5rem] md:text-[6.5rem] lg:text-[8rem] xl:text-[10rem] font-display font-extrabold leading-[0.85] tracking-tighter drop-shadow-md text-foreground inline-block">
-              SOFTWARE<br />ENGINEER
+            <h1 className="hero-heading text-[10.5vw] min-[400px]:text-[4.05rem] sm:text-[5.4rem] md:text-[6.0rem] lg:text-[5.4vw] xl:text-[5.9vw] 2xl:text-[8.4rem] font-display font-extrabold leading-[0.87] tracking-tight drop-shadow-md text-foreground inline-block max-w-full">
+              <span className="whitespace-nowrap block">SENIOR WEB</span>
+              <span className="whitespace-nowrap block">DEVELOPER</span>
             </h1>
 
             {/* Content Block */}
@@ -123,7 +124,7 @@ export function HeroBanner() {
         </div>
 
         {/* Right Side */}
-        <div className="relative hidden lg:flex flex-col px-16 lg:pt-12 lg:pb-24 lg:py-0 lg:justify-center h-full">
+        <div className="relative hidden lg:flex flex-col px-16 lg:pt-12 lg:pb-24 lg:py-0 lg:justify-center h-full bg-background z-20">
 
           <div className="hero-reveal lg:absolute lg:top-50 lg:left-40 xl:left-50 max-w-sm space-y-4 lg:space-y-6 z-40">
             <div className="inline-flex items-center gap-3">
