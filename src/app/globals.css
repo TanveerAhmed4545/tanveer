@@ -6,9 +6,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-dm-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -45,71 +45,35 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  /* Portfolio palette — warm off-white paper + deep ink black + vivid orange accent
-     Inspired by mohamedshehata.net + kvs.services hybrid */
-  --background: #f0efeb;             /* warm paper */
-  --foreground: #111111;             /* deep ink */
-  --card: #ffffff;
-  --card-foreground: #111111;
-  --popover: #ffffff;
-  --popover-foreground: #111111;
-  --primary: #111111;
-  --primary-foreground: #f0efeb;
-  --secondary: #e7e5df;
-  --secondary-foreground: #111111;
-  --muted: #e7e5df;
-  --muted-foreground: #6b6b6b;
-  --accent: #FF5500;                 /* KVS vivid orange */
-  --accent-foreground: #ffffff;
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: rgba(17, 17, 17, 0.1);
-  --input: rgba(17, 17, 17, 0.1);
-  --ring: #FF5500;
-  --chart-1: #FF5500;
-  --chart-2: #111111;
-  --chart-3: #6b6b6b;
-  --chart-4: #adff4c;
-  --chart-5: #e84020;
-  --sidebar: #f0efeb;
-  --sidebar-foreground: #111111;
-  --sidebar-primary: #111111;
-  --sidebar-primary-foreground: #f0efeb;
-  --sidebar-accent: #FF5500;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: rgba(17, 17, 17, 0.1);
-  --sidebar-ring: #FF5500;
-
-  /* Portfolio-specific tokens */
-  --paper: #f0efeb;
-  --ink: #111111;
-  --ink-soft: #1a1a1a;
-  --orange: #FF5500;
-  --orange-soft: rgba(255, 85, 0, 0.92);
-  --warm-white: #faf9f6;
-  --mid-gray: #888888;
-  --lime: #adff4c;
-}
-
-.dark {
-  --background: #0a0a0a;
-  --foreground: #f0efeb;
-  --card: #111111;
-  --card-foreground: #f0efeb;
-  --popover: #111111;
-  --popover-foreground: #f0efeb;
-  --primary: #f0efeb;
-  --primary-foreground: #111111;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #f0efeb;
-  --muted: #1a1a1a;
-  --muted-foreground: #999999;
-  --accent: #FF5500;
-  --accent-foreground: #ffffff;
-  --destructive: oklch(0.704 0.191 22.216);
+  --radius: 2px;
+  /* Wibify Aesthetic — Off-Black & Lime Green */
+  --background: #18181a;
+  --foreground: #ffffff;
+  --card: #222224;
+  --card-foreground: #ffffff;
+  --popover: #222224;
+  --popover-foreground: #ffffff;
+  --primary: #c9e265;
+  --primary-foreground: #18181a;
+  --secondary: #27272a;
+  --secondary-foreground: #ffffff;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #c9e265;                 
+  --accent-foreground: #18181a;
+  --destructive: #ef4444;
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.15);
-  --ring: #FF5500;
+  --ring: #c9e265;
+  
+  /* Portfolio-specific tokens */
+  --paper: #18181a;
+  --ink: #ffffff;
+  --ink-soft: #d4d4d8;
+  --lime: #c9e265;
+  --lime-soft: rgba(201, 226, 101, 0.92);
+  --warm-white: #faf9f6;
+  --mid-gray: #a1a1aa;
 }
 
 @layer base {
@@ -123,12 +87,16 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
     overflow-x: hidden;
   }
   ::selection {
-    background: var(--orange);
-    color: #ffffff;
+    background: var(--lime);
+    color: #18181a;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
   }
 }
 
@@ -138,16 +106,16 @@
 
 /* Eyebrow / mono labels — DM Mono uppercase with letter-spacing */
 .eyebrow {
-  font-family: var(--font-dm-mono), ui-monospace, monospace;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--orange);
+  color: var(--lime);
 }
 
 .eyebrow-muted {
-  font-family: var(--font-dm-mono), ui-monospace, monospace;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.7rem;
@@ -157,7 +125,7 @@
 
 /* Display headings — Space Grotesk, tight letter-spacing */
 .display-xl {
-  font-family: var(--font-space-grotesk), sans-serif;
+  font-family: var(--font-outfit), sans-serif;
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 0.95;
@@ -165,7 +133,7 @@
 }
 
 .display-lg {
-  font-family: var(--font-space-grotesk), sans-serif;
+  font-family: var(--font-outfit), sans-serif;
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.05;
@@ -173,7 +141,7 @@
 }
 
 .display-md {
-  font-family: var(--font-space-grotesk), sans-serif;
+  font-family: var(--font-outfit), sans-serif;
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.1;
@@ -181,7 +149,7 @@
 }
 
 .body-lg {
-  font-family: var(--font-space-grotesk), sans-serif;
+  font-family: var(--font-geist), sans-serif;
   font-weight: 400;
   font-size: clamp(1rem, 1.2vw, 1.25rem);
   line-height: 1.6;
@@ -189,7 +157,7 @@
 }
 
 .mono-tag {
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 0.7rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -198,7 +166,7 @@
 
 /* Brace-wrapped tags — KVS style */
 .brace-tag {
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 0.7rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -214,11 +182,13 @@
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.brace-tag:hover {
-  background: var(--orange);
-  color: #ffffff;
-  border-color: var(--orange);
-  transform: translateY(-2px);
+@media (hover: hover) and (pointer: fine) {
+  .brace-tag:hover {
+    background: var(--lime);
+    color: #ffffff;
+    border-color: var(--lime);
+    transform: translateY(-2px);
+  }
 }
 
 /* Glassmorphic nav pill — Shehata style */
@@ -231,7 +201,7 @@
 }
 
 .nav-link {
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 0.7rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -243,13 +213,15 @@
   white-space: nowrap;
 }
 
-.nav-link:hover {
-  color: #ffffff;
+@media (hover: hover) and (pointer: fine) {
+  .nav-link:hover {
+    color: #ffffff;
+  }
 }
 
 .nav-link.active {
   color: #ffffff;
-  background: var(--orange);
+  background: var(--lime);
 }
 
 /* Section dividers */
@@ -278,16 +250,16 @@
 
 /* Numbered list marker — Shehata style */
 .numbered-marker {
-  font-family: var(--font-dm-mono), monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 0.85rem;
   letter-spacing: 0.05em;
-  color: var(--orange);
+  color: var(--lime);
   font-weight: 500;
 }
 
 /* Metric counter — large display number */
 .metric-number {
-  font-family: var(--font-space-grotesk), sans-serif;
+  font-family: var(--font-outfit), sans-serif;
   font-weight: 700;
   font-size: clamp(3rem, 8vw, 7rem);
   letter-spacing: -0.04em;
@@ -307,7 +279,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--orange);
+  background: var(--lime);
   pointer-events: none;
   z-index: 9999;
   mix-blend-mode: difference;
@@ -322,7 +294,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 1px solid var(--orange);
+  border: 1px solid var(--lime);
   pointer-events: none;
   z-index: 9998;
   transform: translate(-50%, -50%);
@@ -337,28 +309,23 @@
   }
 }
 
-/* Marquee animation — KVS style */
+/* Marquee animation — Best Practice */
 @keyframes marquee {
-  0% {
-    transform: translateX(0);
+  from {
+    transform: translate3d(0, 0, 0);
   }
-  100% {
-    transform: translateX(-50%);
+  to {
+    transform: translate3d(-100%, 0, 0);
   }
 }
 
-.marquee-track {
-  display: flex;
-  width: max-content;
+.animate-marquee {
   animation: marquee 40s linear infinite;
+  will-change: transform;
 }
 
-.marquee-track:hover {
+.animate-marquee:hover {
   animation-play-state: paused;
-}
-
-.marquee-track-reverse {
-  animation-direction: reverse;
 }
 
 /* Scroll bob hint */
@@ -380,10 +347,10 @@
 /* Live status pulse — Shehata style */
 @keyframes livePulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(255, 85, 0, 0.6);
+    box-shadow: 0 0 0 0 rgba(201, 226, 101, 0.6);
   }
   100% {
-    box-shadow: 0 0 0 12px rgba(255, 85, 0, 0);
+    box-shadow: 0 0 0 12px rgba(201, 226, 101, 0);
   }
 }
 
@@ -410,9 +377,11 @@
   filter: grayscale(20%) contrast(1.05);
 }
 
-.project-card:hover .project-image {
-  transform: scale(1.05);
-  filter: grayscale(0%) contrast(1.1);
+@media (hover: hover) and (pointer: fine) {
+  .project-card:hover .project-image {
+    transform: scale(1.05);
+    filter: grayscale(0%) contrast(1.1);
+  }
 }
 
 .project-card .project-overlay {
@@ -450,7 +419,7 @@
   position: relative;
 }
 
-.img-grain::after {
+.img-grain::after, .global-noise {
   content: "";
   position: absolute;
   inset: 0;
@@ -458,6 +427,18 @@
   opacity: 0.08;
   pointer-events: none;
   mix-blend-mode: overlay;
+  z-index: 50; /* Make sure it overlays over backgrounds */
+}
+
+/* Global noise overlay that spans entire view */
+.global-noise {
+  position: fixed;
+  z-index: 9999;
+  opacity: 0.05;
+  will-change: auto;
+  contain: strict;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 /* Hide scrollbar but allow scrolling */
@@ -500,6 +481,19 @@
   border-radius: 0;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--orange);
+@media (hover: hover) and (pointer: fine) {
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--lime);
+  }
+}
+
+/* Smooth scrolling effect for long project screenshots on hover */
+@media (hover: hover) and (pointer: fine) {
+  .project-img-scroll {
+    object-position: top;
+    transition: object-position 5s ease-in-out, transform 0.7s ease-out, filter 0.7s ease-out;
+  }
+  .group:hover .project-img-scroll {
+    object-position: bottom;
+  }
 }
