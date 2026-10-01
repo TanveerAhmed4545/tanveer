@@ -77,6 +77,82 @@ export const experience = [
 
 export const projects = [
   {
+    slug: "emma-davis-books",
+    name: "Emma Davis",
+    tagline: "Premium Shopify bookstore for author Emma Davis — featuring curated collections, new releases, and a warm editorial design.",
+    category: "Shopify · Book Store",
+    date: "2025",
+    liveUrl: "https://emmadavisbooks.com/",
+    techStack: ["Shopify", "Liquid", "Custom Theme", "Loox Reviews", "Bold Upsell", "JavaScript", "CSS3"],
+    description:
+      "Emma Davis Books is a custom Shopify storefront for author Emma Davis, designed to showcase and sell her novels with a warm, editorial aesthetic. Built on the Impulse theme with extensive custom modifications, the store features curated book collections, new releases, and a blog for author updates.",
+    keyFeatures: [
+      "Custom Shopify theme based on Impulse with warm coral (#f3703b) accent color and Aleo serif typography.",
+      "Integrated Loox product reviews and Bold Upsell for increased conversions.",
+      "Swiper-powered product carousels and responsive book showcasing.",
+      "Optimized for US market with Stripe and Shop Pay checkout integrations.",
+    ],
+    image: "/projects/emma-davis-books.jpg",
+    imageAlt: "Emma Davis Books Shopify store homepage",
+  },
+  {
+    slug: "glowhaus",
+    name: "GlowHaus",
+    tagline: "Netherlands-based premium Shopify beauty store — curated skincare, self-care, and all things glow.",
+    category: "Shopify · Beauty & Skincare",
+    date: "2025",
+    liveUrl: "https://shopglowhaus.com/",
+    techStack: ["Shopify", "Liquid", "Reformation Theme", "Rebuy", "Free Gift Upsell", "JavaScript", "CSS3"],
+    description:
+      "GlowHaus is a premium Shopify beauty and skincare store based in the Netherlands, built on the Reformation theme with a soft, feminine pink-toned aesthetic. The store features curated beauty products, skincare essentials, and self-care collections with intelligent upselling and gift promotions.",
+    keyFeatures: [
+      "Custom Reformation theme with feminine pink (#fff8fb) aesthetic and Archivo Narrow typography.",
+      "Rebuy integration for smart product recommendations and upsells.",
+      "Free Gift auto-add functionality with EasyGift app for promotional campaigns.",
+      "Server-side tracking with Taggrs.io and Shopify Inbox live chat for customer support.",
+    ],
+    image: "/projects/glowhaus.jpg",
+    imageAlt: "GlowHaus Shopify beauty store homepage",
+  },
+  {
+    slug: "oomi",
+    name: "Oomi",
+    tagline: "Modern DTC Shopify brand with a warm, playful design — bold product presentation and intelligent pricing.",
+    category: "Shopify · DTC Brand",
+    date: "2025",
+    liveUrl: "https://tryoomi.com/",
+    techStack: ["Shopify", "Liquid", "Surge Theme", "Intelligems A/B", "Gorgias", "PageFly", "JavaScript", "CSS3"],
+    description:
+      "Oomi is a modern direct-to-consumer Shopify store built on a premium Surge theme with a warm cream aesthetic and vibrant orange accents. The store leverages advanced A/B testing, smart customer support, and custom page building for an optimized conversion funnel.",
+    keyFeatures: [
+      "Premium Surge theme with warm cream (#fffbf1) background and vibrant orange (#fc4f00) accents.",
+      "Intelligems A/B testing for price optimization and conversion rate improvement.",
+      "Gorgias live chat and helpdesk integration for premium customer support.",
+      "PageFly AI page builder for custom landing pages and CRO experiments.",
+    ],
+    image: "/projects/oomi.jpg",
+    imageAlt: "Oomi Shopify DTC brand store homepage",
+  },
+  {
+    slug: "the-it-list",
+    name: "The IT List",
+    tagline: "Amsterdam-based luxury jewelry Shopify store — iconic pieces, built to stack. Featuring the Leontine collection.",
+    category: "Shopify · Luxury Jewelry",
+    date: "2025",
+    liveUrl: "https://theitlist.nl/en",
+    techStack: ["Shopify", "Liquid", "Custom Theme", "Multi-language (EN/NL)", "Google Tag Manager", "JavaScript", "CSS3"],
+    description:
+      "The IT List is an Amsterdam-based luxury jewelry Shopify store featuring handcrafted 14K rose & yellow gold pieces built for stacking. The store showcases the signature Leontine collection with an elegant, minimalist design and multilingual support for the Dutch and international markets.",
+    keyFeatures: [
+      "Elegant minimalist design with warm brown (#3d2a23) and rose-gold accents reflecting luxury brand identity.",
+      "Multi-language storefront supporting English and Dutch with localized currency (EUR).",
+      "Advanced color scheme system with 15+ custom color schemes for rich visual storytelling.",
+      "Google Tag Manager integration and Pandectes GDPR compliance for EU market operations.",
+    ],
+    image: "/projects/the-it-list.jpg",
+    imageAlt: "The IT List Amsterdam luxury jewelry store homepage",
+  },
+  {
     slug: "shadow-tourist",
     name: "Shadow Tourist",
     tagline: "Seamless travel booking platform with role-based dashboards and Stripe payments.",

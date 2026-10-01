@@ -14,7 +14,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     
     // Sync GSAP with Lenis
     gsap.ticker.add(update);
-    gsap.ticker.lagSmoothing(0); // Optional: improves GSAP + Lenis sync
+    gsap.ticker.lagSmoothing(500, 33); // Gentle frame-drop smoothing for GSAP + Lenis
     
     // Remove the GSAP ticker when component unmounts
     return () => {

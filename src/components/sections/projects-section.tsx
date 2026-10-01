@@ -2,35 +2,68 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Github } from "lucide-react";
 import { projects } from "@/data/portfolio.data";
 import { useGSAP } from "@gsap/react";
-import { gsap, ScrollTrigger } from "@/lib/gsap-registry";
+import { gsap } from "@/lib/gsap-registry";
+
+const DURATION = 6000; // 6s per slide
 
 export function Projects() {
   const containerRef = useRef<HTMLElement>(null);
   const tabletRef = useRef<HTMLDivElement>(null);
+  const tabletFrameRef = useRef<HTMLDivElement>(null);
+
+  // GSAP quickTo functions for 60-120 FPS hardware-accelerated mouse tilt
+  const quickRotateX = useRef<((value: number) => void) | null>(null);
+  const quickRotateY = useRef<((value: number) => void) | null>(null);
+  const tabletRect = useRef<DOMRect | null>(null);
+
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [filter, setFilter] = useState<"Shopify" | "Custom">("Shopify");
 
-  // Auto-advance projects every 6 seconds unless user hovers or interacts
-  useEffect(() => {
-    if (isPaused) return;
-    const timer = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % projects.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, [isPaused]);
+  const filteredProjects = projects.filter((project) => {
+    const isShopify = project.category.toLowerCase().includes("shopify");
+    if (filter === "Shopify") return isShopify;
+    if (filter === "Custom") return !isShopify;
+    return true; // Fallback
+  });
 
+  const handleFilterChange = (newFilter: "Shopify" | "Custom") => {
+    setFilter(newFilter);
+    setActiveIndex(0); // Reset to first project in new filtered list
+  };
+
+  // Touch coordinates for mobile swipe
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+
+  // Navigation callbacks
   const nextProject = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % projects.length);
-  }, []);
+    setActiveIndex((prev) => (prev + 1) % filteredProjects.length);
+  }, [filteredProjects.length]);
 
   const prevProject = useCallback(() => {
-    setActiveIndex((prev) => (prev - 1 + projects.length) % projects.length);
+    setActiveIndex((prev) => (prev - 1 + filteredProjects.length) % filteredProjects.length);
+  }, [filteredProjects.length]);
+
+  const changeProject = useCallback((index: number) => {
+    setActiveIndex(index);
   }, []);
 
-  // Keyboard navigation support
+  // Zero-overhead Auto-advance timer: ticks ONLY once every 6s, zero intermediate re-renders
+  useEffect(() => {
+    if (isPaused || filteredProjects.length <= 1) return;
+
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % filteredProjects.length);
+    }, DURATION);
+
+    return () => clearInterval(timer);
+  }, [isPaused, activeIndex, filteredProjects.length]);
+
+  // Keyboard navigation support (ArrowLeft / ArrowRight)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!containerRef.current) return;
@@ -48,10 +81,41 @@ export function Projects() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [nextProject, prevProject]);
 
-  useGSAP(() => {
-    ScrollTrigger.refresh();
+  // Touch Swipe Handlers for Mobile Devices
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
 
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    const distance = touchStartX.current - touchEndX.current;
+    if (distance > 50) {
+      nextProject(); // Swipe Left
+    } else if (distance < -50) {
+      prevProject(); // Swipe Right
+    }
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
+  // GSAP quickTo setup for 3D mouse parallax with ZERO React re-renders
+  useGSAP(() => {
     if (!containerRef.current) return;
+
+    if (tabletFrameRef.current) {
+      quickRotateX.current = gsap.quickTo(tabletFrameRef.current, "rotationX", {
+        duration: 0.35,
+        ease: "power2.out",
+      });
+      quickRotateY.current = gsap.quickTo(tabletFrameRef.current, "rotationY", {
+        duration: 0.35,
+        ease: "power2.out",
+      });
+    }
 
     // Eyebrow and Titles entrance animation
     const headerElements = containerRef.current.querySelectorAll(".animate-header");
@@ -62,7 +126,7 @@ export function Projects() {
         opacity: 1,
         x: 0,
         duration: 0.8,
-        stagger: 0.15,
+        stagger: 0.1,
         ease: "power3.out",
         scrollTrigger: {
           trigger: containerRef.current,
@@ -71,16 +135,16 @@ export function Projects() {
       }
     );
 
-    // Tablet Stage 3D entrance
+    // Tablet entrance animation
     if (tabletRef.current) {
       gsap.fromTo(
         tabletRef.current,
-        { opacity: 0, scale: 0.85, rotationY: 15 },
+        { opacity: 0, scale: 0.9, rotationY: 15 },
         {
           opacity: 1,
           scale: 1,
           rotationY: 0,
-          duration: 1.2,
+          duration: 1.1,
           ease: "expo.out",
           scrollTrigger: {
             trigger: tabletRef.current,
@@ -91,53 +155,125 @@ export function Projects() {
     }
   }, { scope: containerRef });
 
-  const activeProject = projects[activeIndex];
+  // Cache bounding rect once on mouse enter to eliminate layout thrashing
+  const handleMouseEnter = () => {
+    setIsPaused(true);
+    if (tabletFrameRef.current) {
+      tabletRect.current = tabletFrameRef.current.getBoundingClientRect();
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!tabletRect.current || !quickRotateX.current || !quickRotateY.current) return;
+    const rect = tabletRect.current;
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    quickRotateX.current(-(y * 10));
+    quickRotateY.current(x * 12);
+  };
+
+  const handleMouseLeave = () => {
+    setIsPaused(false);
+    quickRotateX.current?.(0);
+    quickRotateY.current?.(0);
+  };
+
+  const activeProject = filteredProjects[activeIndex] || projects[0];
   const yearString = activeProject.date.split(" ").pop() || "2026";
-  const yearFirstPart = yearString.slice(0, 2); // e.g. "20"
-  const yearSecondPart = yearString.slice(2);   // e.g. "26" or "24"
+  const yearFirstPart = yearString.slice(0, 2);
+  const yearSecondPart = yearString.slice(2);
 
   return (
     <section
       ref={containerRef}
       id="projects"
       className="relative w-full bg-[#0d0d0f] text-foreground py-20 sm:py-28 md:py-36 overflow-hidden select-none font-sans"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      {/* Subtle Ambient Radial Glow */}
-      <div className="absolute top-1/4 right-10 w-[500px] h-[500px] bg-[var(--lime)]/5 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-10 left-10 w-[400px] h-[400px] bg-pink-500/5 rounded-full blur-[120px] pointer-events-none" />
+      {/* Subtle Ambient Radial Glow (Hardware-accelerated radial gradients without expensive CSS blur) */}
+      <div
+        className="absolute top-1/4 right-10 w-[500px] h-[500px] rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(201, 226, 101, 0.08) 0%, transparent 70%)" }}
+      />
+      <div
+        className="absolute bottom-10 left-10 w-[400px] h-[400px] rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(255, 42, 133, 0.06) 0%, transparent 70%)" }}
+      />
 
       <div className="relative z-10 max-w-[1600px] mx-auto px-6 sm:px-10 md:px-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center min-h-[700px]">
         
         {/* ── LEFT COLUMN: PROJECT SELECTOR & BRANDING (Davies Style) ── */}
         <div className="col-span-1 lg:col-span-5 flex flex-col justify-between h-full py-4 z-20">
           
-          {/* Top Eyebrow */}
-          <div className="animate-header flex items-center gap-3 mb-8 md:mb-12">
-            <svg className="w-7 h-7 text-white/50" viewBox="0 0 32 32" fill="none" stroke="currentColor">
-              <path d="M6 26 Q 14 14, 26 6" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-            <span className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground font-semibold">
-              SELECTED WORKS
-            </span>
+          {/* Top Eyebrow & Filter Tabs */}
+          <div className="animate-header flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-10">
+            <div className="flex items-center gap-3">
+              <svg className="w-6 h-6 sm:w-7 sm:h-7 text-white/50" viewBox="0 0 32 32" fill="none" stroke="currentColor">
+                <path d="M6 26 Q 14 14, 26 6" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground font-semibold">
+                SELECTED WORKS
+              </span>
+            </div>
+            
+            {/* Filter Tabs */}
+            <div className="flex items-center bg-white/5 p-1 rounded-full border border-white/10 backdrop-blur-md w-fit z-30">
+              {(["Shopify", "Custom"] as const).map((f) => (
+                <button
+                  key={f}
+                  onClick={() => handleFilterChange(f)}
+                  className={`px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-mono uppercase tracking-widest transition-all ${
+                    filter === f 
+                      ? "bg-[var(--lime)] text-black font-bold shadow-[0_0_15px_rgba(201,226,101,0.3)]" 
+                      : "text-white/60 hover:text-white hover:bg-white/10"
+                  }`}
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Vertical Interactive Titles List */}
-          <div className="flex flex-col gap-3 sm:gap-4 my-auto py-4">
-            {projects.map((project, idx) => {
+          {/* Vertical Interactive Titles List (Zero Layout Shift) */}
+          <div
+            role="tablist"
+            aria-label="Project list"
+            className="flex flex-col gap-1 sm:gap-2 my-auto py-4"
+          >
+            {filteredProjects.map((project, idx) => {
               const isActive = idx === activeIndex;
               return (
                 <div
                   key={project.slug}
-                  onClick={() => setActiveIndex(idx)}
-                  className="animate-header group cursor-pointer flex items-center gap-4 w-fit"
+                  role="tab"
+                  id={`project-tab-${idx}`}
+                  aria-selected={isActive}
+                  tabIndex={0}
+                  onClick={() => changeProject(idx)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      changeProject(idx);
+                    }
+                  }}
+                  className="animate-header group cursor-pointer flex items-center gap-3 sm:gap-4 w-fit py-1.5 sm:py-2 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--lime)] rounded-lg transition-transform active:scale-[0.98]"
                 >
-                  <h3
-                    className={`transition-all duration-500 font-bold tracking-tight ${
+                  {/* Neon Lime Accent Indicator Bar */}
+                  <div
+                    className={`w-1 sm:w-1.5 rounded-full bg-[var(--lime)] shadow-[0_0_15px_rgba(201,226,101,0.9)] transition-all duration-300 ease-out origin-center ${
                       isActive
-                        ? "text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white pl-4 border-l-4 border-[var(--lime)] drop-shadow-[0_4px_15px_rgba(255,255,255,0.15)]"
-                        : "text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white/25 hover:text-white/70 pl-0 border-l-4 border-transparent"
+                        ? "h-8 sm:h-12 md:h-14 opacity-100 scale-y-100"
+                        : "h-0 opacity-0 scale-y-0"
+                    }`}
+                  />
+
+                  {/* Project Title with stable row & smooth glow */}
+                  <h3
+                    className={`font-bold tracking-tight transition-all duration-300 ease-out ${
+                      isActive
+                        ? "text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white drop-shadow-[0_4px_25px_rgba(255,255,255,0.2)] pl-1"
+                        : "text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white/30 hover:text-white/75 pl-0"
                     }`}
                   >
                     {project.name}
@@ -147,80 +283,129 @@ export function Projects() {
             })}
           </div>
 
-          {/* Bottom Left: Rotating Award Badge & Active Project Category Pills */}
-          <div className="animate-header flex flex-wrap items-center gap-6 mt-12 pt-8 border-t border-white/10">
-            {/* Rotating Circular Award Badge */}
-            <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center flex-shrink-0">
-              <svg
-                className="w-full h-full animate-spin"
-                style={{ animationDuration: "20s" }}
-                viewBox="0 0 100 100"
-              >
-                <path
-                  id="awardPath"
-                  d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
-                  fill="none"
-                />
-                <text className="text-[10.5px] font-mono uppercase tracking-[0.16em] fill-white/70 font-semibold">
-                  <textPath href="#awardPath">
-                    • WEBSITE OF THE DAY • AWARDED •
-                  </textPath>
-                </text>
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="font-bold text-xs font-mono text-[var(--lime)] tracking-tighter">
-                  MERN
-                </span>
-              </div>
-            </div>
+          {/* Bottom Left: Tagline, Award Badge & Action Buttons */}
+          <div className="animate-header flex flex-col gap-6 mt-8 sm:mt-12 pt-6 border-t border-white/10">
+            {/* Project Tagline */}
+            <p className="text-white/70 text-xs sm:text-sm font-sans max-w-lg leading-relaxed transition-opacity duration-300 line-clamp-2">
+              {activeProject.tagline}
+            </p>
 
-            {/* Category Pills & Live Button */}
-            <div className="flex flex-wrap items-center gap-2.5">
-              {activeProject.category.split(" · ").map((tag, i) => (
-                <span
-                  key={i}
-                  className="border border-white/20 rounded-full px-5 py-2 text-[10px] sm:text-xs font-mono tracking-widest uppercase text-white/90 bg-white/[0.03] backdrop-blur-sm shadow-sm"
+            <div className="flex flex-wrap items-center gap-5 sm:gap-6">
+              {/* Rotating Circular Award Badge */}
+              <div className="relative w-18 h-18 sm:w-22 sm:h-22 flex items-center justify-center flex-shrink-0 group/badge">
+                <svg
+                  className="w-full h-full animate-spin group-hover/badge:[animation-play-state:paused]"
+                  style={{ animationDuration: "20s" }}
+                  viewBox="0 0 100 100"
                 >
-                  {tag}
-                </span>
-              ))}
-              <a
-                href={activeProject.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-[var(--lime)] rounded-full px-5 py-2 text-[10px] sm:text-xs font-mono tracking-widest uppercase text-black font-bold bg-[var(--lime)] hover:bg-white transition-all shadow-[0_0_20px_rgba(201,226,101,0.4)] flex items-center gap-1.5 active:scale-95"
-              >
-                <span>Live Site</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
-              </a>
+                  <path
+                    id="awardPath"
+                    d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
+                    fill="none"
+                  />
+                  <text className="text-[10px] font-mono uppercase tracking-[0.16em] fill-white/70 font-semibold">
+                    <textPath href="#awardPath">
+                      • WEBSITE OF THE DAY • AWARDED •
+                    </textPath>
+                  </text>
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="font-bold text-xs font-mono text-[var(--lime)] tracking-tighter">
+                    {activeProject.category.toLowerCase().includes("shopify") ? "SHOPIFY" : "MERN"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Category Pills & Action Buttons */}
+              <div className="flex flex-wrap items-center gap-2.5">
+                {activeProject.category.split(" · ").map((tag, i) => (
+                  <span
+                    key={i}
+                    className="border border-white/20 rounded-full px-4 py-1.5 sm:px-5 sm:py-2 text-[10px] sm:text-xs font-mono tracking-widest uppercase text-white/90 bg-white/[0.03] backdrop-blur-sm shadow-sm transition-all duration-300"
+                  >
+                    {tag}
+                  </span>
+                ))}
+
+                {/* Live Site Button */}
+                <a
+                  href={activeProject.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="border border-[var(--lime)] rounded-full px-5 py-2 text-[10px] sm:text-xs font-mono tracking-widest uppercase text-black font-bold bg-[var(--lime)] hover:bg-white hover:border-white transition-all shadow-[0_0_25px_rgba(201,226,101,0.45)] hover:shadow-[0_0_35px_rgba(255,255,255,0.5)] flex items-center gap-1.5 active:scale-95 cursor-pointer"
+                >
+                  <span>Live Site</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </a>
+
+                {/* GitHub Code Button (if repo exists) */}
+                {activeProject.githubUrl && (
+                  <a
+                    href={activeProject.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="border border-white/20 rounded-full px-4 py-2 text-[10px] sm:text-xs font-mono tracking-widest uppercase text-white/90 hover:text-white font-semibold bg-white/5 hover:bg-white/15 hover:border-white/40 transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer"
+                    title="View Source Code on GitHub"
+                  >
+                    <Github className="w-3.5 h-3.5" />
+                    <span>Code</span>
+                  </a>
+                )}
+              </div>
             </div>
           </div>
 
         </div>
 
         {/* ── RIGHT COLUMN: EPIC TABLET MOCKUP IN ROCKY TERRAIN & YEAR ── */}
-        <div className="col-span-1 lg:col-span-7 relative flex items-center justify-center py-10 sm:py-16">
+        <div
+          className="col-span-1 lg:col-span-7 relative flex items-center justify-center py-8 sm:py-14"
+          onMouseMove={handleMouseMove}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           
-          <div ref={tabletRef} className="relative w-full max-w-[760px] flex items-center justify-center">
+          <div ref={tabletRef} className="relative w-full max-w-[760px] flex items-center justify-center [perspective:1200px]">
             
-            {/* Ambient Behind-Tablet Glows */}
-            <div className="absolute w-[85%] h-[75%] bg-[var(--lime)]/15 rounded-full blur-[110px] pointer-events-none" />
-            <div className="absolute w-[65%] h-[55%] bg-pink-500/10 rounded-full blur-[90px] pointer-events-none translate-y-12" />
+            {/* Ambient Behind-Tablet Glows (Zero-blur radial gradients) */}
+            <div
+              className="absolute w-[85%] h-[75%] rounded-full pointer-events-none"
+              style={{ background: "radial-gradient(circle, rgba(201, 226, 101, 0.12) 0%, transparent 65%)" }}
+            />
+            <div
+              className="absolute w-[65%] h-[55%] rounded-full pointer-events-none translate-y-12"
+              style={{ background: "radial-gradient(circle, rgba(255, 42, 133, 0.08) 0%, transparent 65%)" }}
+            />
 
-            {/* Tablet Mockup Frame */}
-            <div className="relative w-full aspect-[16/10] bg-[#141417] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] p-3 sm:p-4 md:p-5 border border-white/20 shadow-[0_35px_100px_rgba(0,0,0,0.95),_0_0_60px_rgba(201,226,101,0.08)] transform -rotate-1 hover:rotate-0 transition-all duration-700 ease-out z-20 group">
+            {/* Tablet Mockup Frame with GSAP quickTo 3D Tilt */}
+            <div
+              ref={tabletFrameRef}
+              style={{
+                transform: "rotate(-1deg)",
+                transformStyle: "preserve-3d",
+                willChange: "transform",
+              }}
+              className="relative w-full aspect-[16/10] bg-[#141417] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] p-3 sm:p-4 md:p-5 border border-white/20 shadow-[0_35px_100px_rgba(0,0,0,0.95),_0_0_60px_rgba(201,226,101,0.08)] z-20 group/tablet"
+            >
               
               {/* Tablet Top Camera Dot & Sensors */}
-              <div className="absolute top-1.5 sm:top-2.5 left-1/2 -translate-x-1/2 flex items-center gap-2 z-30">
-                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white/20 shadow-inner" />
+              <div className="absolute top-1.5 sm:top-2.5 left-1/2 -translate-x-1/2 flex items-center gap-2 z-30 pointer-events-none">
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white/25 shadow-inner" />
                 <div className="w-1 h-1 rounded-full bg-white/10" />
               </div>
 
-              {/* Tablet Screen Viewport */}
-              <div className="relative w-full h-full rounded-[16px] sm:rounded-[22px] md:rounded-[28px] overflow-hidden bg-[#08080a] border border-white/10">
+              {/* Tablet Screen Viewport as Clickable Link */}
+              <a
+                href={activeProject.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`Open ${activeProject.name} Live Site`}
+                className="relative block w-full h-full rounded-[16px] sm:rounded-[22px] md:rounded-[28px] overflow-hidden bg-[#08080a] border border-white/10 cursor-pointer group/screen"
+              >
                 
                 {/* Render All Project Images with Crossfade */}
-                {projects.map((proj, idx) => {
+                {filteredProjects.map((proj, idx) => {
                   const isCurrent = idx === activeIndex;
                   return (
                     <div
@@ -236,7 +421,7 @@ export function Projects() {
                         alt={proj.imageAlt || proj.name}
                         fill
                         sizes="(max-width: 768px) 100vw, 850px"
-                        className="object-cover object-top transition-transform duration-[5s] ease-out group-hover:scale-105 group-hover:object-bottom"
+                        className="object-cover project-img-scroll"
                         priority={idx === 0}
                       />
 
@@ -245,10 +430,10 @@ export function Projects() {
 
                       {/* Quick Tech Stack Pills inside screen */}
                       <div className="absolute bottom-4 left-5 right-5 flex items-center justify-between pointer-events-none text-white font-mono text-[10px] sm:text-xs z-20">
-                        <span className="bg-black/70 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15 text-[var(--lime)] font-semibold shadow-lg">
+                        <span className="bg-black/75 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15 text-[var(--lime)] font-semibold shadow-lg">
                           {proj.category.split(" · ")[0]}
                         </span>
-                        <div className="hidden sm:flex items-center gap-1.5 bg-black/70 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15">
+                        <div className="hidden sm:flex items-center gap-1.5 bg-black/75 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15">
                           {proj.techStack.slice(0, 3).map((tech, tIdx) => (
                             <span key={tIdx} className="text-white/80">
                               {tech}{tIdx < 2 ? " · " : ""}
@@ -260,13 +445,20 @@ export function Projects() {
                   );
                 })}
 
+                {/* Floating "View Live Site" Overlay on Screen Hover */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/screen:opacity-100 transition-opacity duration-300 z-30 pointer-events-none bg-black/30 backdrop-blur-[2px]">
+                  <div className="flex items-center gap-2 bg-black/80 backdrop-blur-md px-5 py-2.5 rounded-full border border-[var(--lime)] text-[var(--lime)] text-xs font-mono font-bold tracking-widest uppercase shadow-[0_0_30px_rgba(201,226,101,0.5)] transform translate-y-2 group-hover/screen:translate-y-0 transition-transform duration-300">
+                    <span>VISIT LIVE SITE</span>
+                    <ArrowUpRight className="w-4 h-4" />
+                  </div>
+                </div>
+
                 {/* Realistic Glass Reflection Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.07] to-transparent pointer-events-none z-30" />
-              </div>
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.07] to-transparent pointer-events-none z-25" />
+              </a>
             </div>
 
             {/* ── REALISTIC DARK VOLCANIC ROCKS / TERRAIN SILHOUETTE ── */}
-            {/* Recreates the Davies theme terrain framing around the tablet */}
             <div className="absolute -bottom-20 -left-16 -right-16 sm:-bottom-24 sm:-left-24 sm:-right-24 h-56 sm:h-72 md:h-96 pointer-events-none z-30 overflow-hidden">
               <svg
                 className="w-full h-full object-cover text-[#0d0d0f]"
@@ -303,15 +495,17 @@ export function Projects() {
                   fill="#0d0d0f"
                 />
               </svg>
-              {/* Subtle top rim light on rocks */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0f] via-transparent to-transparent opacity-85" />
             </div>
 
-            {/* ── HUGE YEAR TYPOGRAPHY (Davies Pink Accent Style) ── */}
+            {/* ── HUGE YEAR TYPOGRAPHY (Davies Pink Accent Style) WITH SMOOTH SLIDE ── */}
             <div className="absolute -bottom-8 -right-2 sm:-right-6 md:-right-10 z-40 select-none pointer-events-none">
-              <div className="font-outfit font-black text-6xl sm:text-8xl md:text-[9rem] lg:text-[11rem] leading-none tracking-tighter flex items-baseline drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)]">
+              <div
+                key={yearString}
+                className="animate-year-slide font-outfit font-black text-6xl sm:text-8xl md:text-[9rem] lg:text-[11rem] leading-none tracking-tighter flex items-baseline drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)]"
+              >
                 <span className="text-white">{yearFirstPart}</span>
-                <span className="text-[#ff2a85]">{yearSecondPart}</span>
+                <span className="text-[#ff2a85] ml-0.5">{yearSecondPart}</span>
               </div>
             </div>
 
@@ -321,31 +515,64 @@ export function Projects() {
 
       </div>
 
-      {/* ── BOTTOM CONTROLS: ← PREV   /   NEXT → ── */}
-      <div className="relative z-40 max-w-[1600px] mx-auto px-6 flex items-center justify-center gap-8 sm:gap-16 mt-16 sm:mt-24 font-mono text-xs sm:text-sm tracking-[0.25em] uppercase text-white/70">
+      {/* ── BOTTOM CONTROLS: ← PREV / INTERACTIVE DOTS / AUTO-PLAY PROGRESS / NEXT → ── */}
+      <div className="relative z-40 max-w-[1600px] mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6 mt-14 sm:mt-20 font-mono text-xs sm:text-sm tracking-[0.25em] uppercase text-white/70">
         
+        {/* Left: Previous Button */}
         <button
           onClick={prevProject}
           aria-label="Previous project"
-          className="flex items-center gap-3 hover:text-[var(--lime)] active:scale-95 transition-all group py-2 px-4 cursor-pointer"
+          className="flex items-center gap-3 hover:text-[var(--lime)] active:scale-95 transition-all group py-2 px-4 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--lime)] rounded-full"
         >
-          <span className="group-hover:-translate-x-1.5 transition-transform duration-300 font-bold">←</span>
+          <span className="group-hover:-translate-x-1.5 transition-transform duration-300 font-bold text-base">←</span>
           <span>PREV</span>
         </button>
 
-        <div className="flex items-center gap-2 text-white/40 font-mono text-xs bg-white/[0.04] px-4 py-1.5 rounded-full border border-white/10">
-          <span className="text-[var(--lime)] font-bold">{String(activeIndex + 1).padStart(2, "0")}</span>
-          <span>/</span>
-          <span>{String(projects.length).padStart(2, "0")}</span>
+        {/* Center: Interactive Pills & Auto-Play Progress Bar */}
+        <div className="flex flex-col items-center gap-2.5">
+          <div className="flex items-center gap-2.5 bg-white/[0.04] px-4 py-2 rounded-full border border-white/10 backdrop-blur-sm">
+            {filteredProjects.map((proj, idx) => {
+              const isActive = idx === activeIndex;
+              return (
+                <button
+                  key={proj.slug}
+                  onClick={() => changeProject(idx)}
+                  aria-label={`Jump to ${proj.name}`}
+                  className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    isActive
+                      ? "w-8 bg-[var(--lime)] shadow-[0_0_12px_rgba(201,226,101,0.8)]"
+                      : "w-2.5 bg-white/20 hover:bg-white/50"
+                  }`}
+                />
+              );
+            })}
+            <div className="ml-2 pl-2 border-l border-white/20 flex items-center gap-1 text-[11px] text-white/50">
+              <span className="text-[var(--lime)] font-bold">{String(activeIndex + 1).padStart(2, "0")}</span>
+              <span>/</span>
+              <span>{String(filteredProjects.length).padStart(2, "0")}</span>
+            </div>
+          </div>
+
+          {/* Micro Progress Bar (GPU Keyframe animation, zero React re-renders) */}
+          <div className="w-36 sm:w-48 h-0.5 bg-white/10 rounded-full overflow-hidden">
+            <div
+              key={activeIndex}
+              className="h-full w-full bg-[var(--lime)] shadow-[0_0_8px_rgba(201,226,101,0.8)] animate-progress-fill"
+              style={{
+                animationPlayState: isPaused ? "paused" : "running",
+              }}
+            />
+          </div>
         </div>
 
+        {/* Right: Next Button */}
         <button
           onClick={nextProject}
           aria-label="Next project"
-          className="flex items-center gap-3 hover:text-[var(--lime)] active:scale-95 transition-all group py-2 px-4 cursor-pointer"
+          className="flex items-center gap-3 hover:text-[var(--lime)] active:scale-95 transition-all group py-2 px-4 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--lime)] rounded-full"
         >
           <span>NEXT</span>
-          <span className="group-hover:translate-x-1.5 transition-transform duration-300 font-bold">→</span>
+          <span className="group-hover:translate-x-1.5 transition-transform duration-300 font-bold text-base">→</span>
         </button>
 
       </div>
