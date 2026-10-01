@@ -77,6 +77,96 @@ export const experience = [
 
 export const projects = [
   {
+    slug: "eric-mobile-notary",
+    name: "Eric Notary",
+    tagline: "Mobile Notary, Apostille & Estate Planning services in Fort Worth, TX.",
+    category: "Squarespace · Legal Services",
+    date: "2025",
+    liveUrl: "https://www.ericthemobilenotary.com/",
+    techStack: ["Squarespace", "Custom CSS", "Acuity Scheduling", "JavaScript"],
+    description: "A professional and accessible website for a mobile notary service. Built on Squarespace, the site features clear calls-to-action for booking appointments, detailed service breakdowns for apostille and estate planning, and a clean, trustworthy design tailored to the Fort Worth market.",
+    keyFeatures: [
+      "Custom Squarespace design optimized for local SEO.",
+      "Integrated booking and scheduling via Acuity.",
+      "Mobile-first responsive design for on-the-go clients.",
+      "Clear service tiers and pricing structures."
+    ],
+    image: "/projects/eric-mobile-notary.jpg",
+    imageAlt: "Eric the Mobile Notary Homepage"
+  },
+  {
+    slug: "palm-st-pilates",
+    name: "Palm St Pilates",
+    tagline: "Reformer, Mat & Barre Pilates studio based in Frome & Bruton.",
+    category: "Squarespace · Fitness Studio",
+    date: "2025",
+    liveUrl: "https://www.palmstpilates.co.uk/",
+    techStack: ["Squarespace", "Momence Integration", "Custom CSS", "HTML5"],
+    description: "A serene and inviting digital storefront for Palm St Pilates. The Squarespace site embodies the studio's calming aesthetic while providing seamless integration with Momence for class bookings, memberships, and schedule management.",
+    keyFeatures: [
+      "Calm, aesthetic-driven design reflecting the Pilates brand.",
+      "Seamless Momence booking integration for class schedules.",
+      "Location-specific pages for Frome and Bruton studios.",
+      "Optimized performance and mobile-friendly layout."
+    ],
+    image: "/projects/palm-st-pilates.jpg",
+    imageAlt: "Palm St Pilates Homepage"
+  },
+  {
+    slug: "opp-law",
+    name: "Opp Law",
+    tagline: "Professional legal counsel and attorney services.",
+    category: "Squarespace · Law Firm",
+    date: "2025",
+    liveUrl: "https://opp-law.com/",
+    techStack: ["Squarespace", "Custom CSS", "JavaScript", "HTML5"],
+    description: "A highly professional and authoritative web presence for Opp Law. This Squarespace build focuses on establishing trust, outlining practice areas clearly, and providing an easy path for potential clients to request consultations.",
+    keyFeatures: [
+      "Authoritative, clean design tailored for the legal industry.",
+      "Clear practice area overviews and attorney profiles.",
+      "Secure contact forms for consultation requests.",
+      "Accessible and responsive UI."
+    ],
+    image: "/projects/opp-law.jpg",
+    imageAlt: "Opp Law Homepage"
+  },
+  {
+    slug: "nxtgen-pt-co",
+    name: "NXTGEN PT Co",
+    tagline: "Enhance Movement Today — Professional Physical Therapy.",
+    category: "Squarespace · Physical Therapy",
+    date: "2025",
+    liveUrl: "https://www.nxtgenptco.com/",
+    techStack: ["Squarespace", "Custom CSS", "Booking Integration", "JavaScript"],
+    description: "A dynamic and modern website for NXTGEN Physical Therapy. Designed to encourage movement and recovery, the site features patient resources, service details, and an intuitive booking system for new and returning patients.",
+    keyFeatures: [
+      "Dynamic, health-focused design with strong imagery.",
+      "Patient intake and scheduling integration.",
+      "Comprehensive service and treatment explanations.",
+      "Fast-loading, mobile-optimized experience."
+    ],
+    image: "/projects/nxtgen-pt.jpg",
+    imageAlt: "NXTGEN PT Co Homepage"
+  },
+  {
+    slug: "oluwa7",
+    name: "Oluwa7",
+    tagline: "Capture Genuine Moments — Professional photography portfolio.",
+    category: "Squarespace · Photography",
+    date: "2025",
+    liveUrl: "https://www.oluwa7.com/",
+    techStack: ["Squarespace", "Portfolio Engine", "Custom CSS", "JavaScript"],
+    description: "A visually stunning, image-first portfolio for Oluwa7 Photography. Built on Squarespace, this site puts the photography front and center with immersive galleries, smooth scrolling, and easy client booking capabilities.",
+    keyFeatures: [
+      "Immersive, high-resolution photo galleries.",
+      "Minimalist UI to let the photography stand out.",
+      "Integrated contact and booking forms for photo sessions.",
+      "Optimized image loading for fast performance."
+    ],
+    image: "/projects/oluwa7.jpg",
+    imageAlt: "Oluwa7 Photography Homepage"
+  },
+  {
     slug: "emma-davis-books",
     name: "Emma Davis",
     tagline: "Premium Shopify bookstore for author Emma Davis — featuring curated collections, new releases, and a warm editorial design.",

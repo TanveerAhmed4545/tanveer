@@ -21,16 +21,17 @@ export function Projects() {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [filter, setFilter] = useState<"Shopify" | "Custom">("Shopify");
+  const [filter, setFilter] = useState<"Shopify" | "Squarespace" | "Custom">("Squarespace");
 
   const filteredProjects = projects.filter((project) => {
-    const isShopify = project.category.toLowerCase().includes("shopify");
-    if (filter === "Shopify") return isShopify;
-    if (filter === "Custom") return !isShopify;
+    const categoryLower = project.category.toLowerCase();
+    if (filter === "Shopify") return categoryLower.includes("shopify");
+    if (filter === "Squarespace") return categoryLower.includes("squarespace");
+    if (filter === "Custom") return !categoryLower.includes("shopify") && !categoryLower.includes("squarespace");
     return true; // Fallback
   });
 
-  const handleFilterChange = (newFilter: "Shopify" | "Custom") => {
+  const handleFilterChange = (newFilter: "Shopify" | "Squarespace" | "Custom") => {
     setFilter(newFilter);
     setActiveIndex(0); // Reset to first project in new filtered list
   };
@@ -219,7 +220,7 @@ export function Projects() {
             
             {/* Filter Tabs */}
             <div className="flex items-center bg-white/5 p-1 rounded-full border border-white/10 backdrop-blur-md w-fit z-30">
-              {(["Shopify", "Custom"] as const).map((f) => (
+              {(["Squarespace", "Shopify", "Custom"] as const).map((f) => (
                 <button
                   key={f}
                   onClick={() => handleFilterChange(f)}
@@ -310,8 +311,12 @@ export function Projects() {
                   </text>
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="font-bold text-xs font-mono text-[var(--lime)] tracking-tighter">
-                    {activeProject.category.toLowerCase().includes("shopify") ? "SHOPIFY" : "MERN"}
+                  <span className="font-bold text-[10px] sm:text-[11px] font-mono text-[var(--lime)] tracking-tighter">
+                    {activeProject.category.toLowerCase().includes("shopify") 
+                      ? "SHOPIFY" 
+                      : activeProject.category.toLowerCase().includes("squarespace") 
+                        ? "SQSPACE" 
+                        : "MERN"}
                   </span>
                 </div>
               </div>
