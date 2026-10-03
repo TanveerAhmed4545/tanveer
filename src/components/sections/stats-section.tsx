@@ -9,8 +9,8 @@ import { stats } from "@/data/portfolio.data";
  * Animated metric counter
  */
 function MetricCounter({ value, suffix }: { value: number; suffix: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const [count, setCount] = useState(0);
+  const containerRef = useRef<HTMLSpanElement>(null);
+  const numRef = useRef<HTMLSpanElement>(null);
 
   useGSAP(() => {
     const obj = { val: 0 };
@@ -19,18 +19,20 @@ function MetricCounter({ value, suffix }: { value: number; suffix: string }) {
       duration: 2,
       ease: "power3.out",
       scrollTrigger: {
-        trigger: ref.current,
+        trigger: containerRef.current,
         start: "top 90%",
       },
       onUpdate: () => {
-        setCount(Math.round(obj.val));
+        if (numRef.current) {
+          numRef.current.textContent = String(Math.round(obj.val));
+        }
       }
     });
-  }, { scope: ref });
+  }, { scope: containerRef });
 
   return (
-    <span ref={ref} className="text-6xl md:text-8xl font-playfair font-bold text-foreground">
-      {count}
+    <span ref={containerRef} className="text-6xl md:text-8xl font-playfair font-bold text-foreground tabular-nums">
+      <span ref={numRef}>0</span>
       <span className="text-primary text-4xl md:text-6xl">{suffix}</span>
     </span>
   );

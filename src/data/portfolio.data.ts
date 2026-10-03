@@ -91,7 +91,7 @@ export const projects = [
       "Mobile-first responsive design for on-the-go clients.",
       "Clear service tiers and pricing structures."
     ],
-    image: "/projects/eric-mobile-notary.jpg",
+    image: "/projects/eric-mobile-notary.webp",
     imageAlt: "Eric the Mobile Notary Homepage"
   },
   {
@@ -109,7 +109,7 @@ export const projects = [
       "Location-specific pages for Frome and Bruton studios.",
       "Optimized performance and mobile-friendly layout."
     ],
-    image: "/projects/palm-st-pilates.jpg",
+    image: "/projects/palm-st-pilates.png",
     imageAlt: "Palm St Pilates Homepage"
   },
   {
@@ -182,7 +182,7 @@ export const projects = [
       "Swiper-powered product carousels and responsive book showcasing.",
       "Optimized for US market with Stripe and Shop Pay checkout integrations.",
     ],
-    image: "/projects/emma-davis-books.jpg",
+    image: "/projects/emma-davis-books.png",
     imageAlt: "Emma Davis Books Shopify store homepage",
   },
   {
@@ -201,7 +201,7 @@ export const projects = [
       "Free Gift auto-add functionality with EasyGift app for promotional campaigns.",
       "Server-side tracking with Taggrs.io and Shopify Inbox live chat for customer support.",
     ],
-    image: "/projects/glowhaus.jpg",
+    image: "/projects/glowhaus.webp",
     imageAlt: "GlowHaus Shopify beauty store homepage",
   },
   {
@@ -239,8 +239,28 @@ export const projects = [
       "Advanced color scheme system with 15+ custom color schemes for rich visual storytelling.",
       "Google Tag Manager integration and Pandectes GDPR compliance for EU market operations.",
     ],
-    image: "/projects/the-it-list.jpg",
+    image: "/projects/the-it-list.png",
     imageAlt: "The IT List Amsterdam luxury jewelry store homepage",
+  },
+  {
+    slug: "team-shogun",
+    name: "Team Shogun",
+    tagline: "Ultra-premium agency command center & operations hub with interactive 3D and GSAP animations.",
+    category: "Full-Stack · Agency Platform",
+    date: "2025",
+    liveUrl: "https://team-shogun.vercel.app/",
+    githubUrl: "https://github.com/TanveerAhmed4545/team-shogun",
+    techStack: ["Next.js", "React.js", "TypeScript", "Tailwind CSS", "GSAP", "Three.js", "Framer Motion"],
+    description:
+      "Team Shogun is an agency operations and digital solutions platform engineered to an ultra-premium visual and technical standard. It features high-performance 3D canvas visuals, GSAP scroll-triggered physics, multi-specialisation service architecture, and an integrated client command center dashboard.",
+    keyFeatures: [
+      "Interactive 3D canvas and GSAP-driven scroll animations with high-frame-rate parallax physics.",
+      "Agency command center dashboard with project pipeline tracking and metrics overview.",
+      "Multi-platform service architecture spanning Shopify, Squarespace, Wix/Velo, and full-stack React/Node.js.",
+      "High-converting dark aesthetic design system with precision neon emerald styling and responsive fluid layouts.",
+    ],
+    image: "/projects/team-shogun.png",
+    imageAlt: "Team Shogun agency command center and digital solutions platform",
   },
   {
     slug: "shadow-tourist",

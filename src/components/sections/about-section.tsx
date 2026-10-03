@@ -3,14 +3,9 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap } from "@/lib/gsap-registry";
 import { about, profile } from "@/data/portfolio.data";
 import { MapPin, Sparkles, Code2, Globe } from "lucide-react";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 export function About() {
   const containerRef = useRef<HTMLElement>(null);
@@ -38,17 +33,6 @@ export function About() {
         }
       }
     );
-
-    // Hover effect setup for cards (subtle scale)
-    cards.forEach((card: any) => {
-      card.addEventListener('mouseenter', () => {
-        gsap.to(card, { scale: 1.02, duration: 0.3, ease: "power2.out" });
-      });
-      card.addEventListener('mouseleave', () => {
-        gsap.to(card, { scale: 1, duration: 0.3, ease: "power2.out" });
-      });
-    });
-
   }, { scope: containerRef });
 
   return (
@@ -71,7 +55,7 @@ export function About() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-auto">
           
           {/* CARD 1: Portrait (Spans 2 rows on Desktop) */}
-          <div className="bento-card group relative col-span-1 md:row-span-2 flex flex-col justify-end min-h-[400px] md:min-h-full rounded-[32px] overflow-hidden bg-white/5 border border-white/10 p-8 shadow-2xl">
+          <div className="bento-card group relative col-span-1 md:row-span-2 flex flex-col justify-end min-h-[400px] md:min-h-full rounded-[32px] overflow-hidden bg-white/5 border border-white/10 p-8 shadow-2xl transition-transform duration-300 hover:scale-[1.015]">
             <Image 
               src="/pic2.jpeg" 
               fill 
@@ -94,7 +78,7 @@ export function About() {
           </div>
 
           {/* CARD 2: The Manifesto (Spans 2 columns on Desktop) */}
-          <div className="bento-card col-span-1 md:col-span-2 flex flex-col justify-center rounded-[32px] bg-white/[0.03] border border-white/10 p-10 lg:p-14 shadow-xl">
+          <div className="bento-card col-span-1 md:col-span-2 flex flex-col justify-center rounded-[32px] bg-white/[0.03] border border-white/10 p-10 lg:p-14 shadow-xl transition-transform duration-300 hover:scale-[1.015]">
             <h3 className="text-2xl md:text-4xl font-playfair font-bold text-white mb-6">
               {about.opening}
             </h3>
@@ -108,7 +92,7 @@ export function About() {
           </div>
 
           {/* CARD 3: Tech Stack */}
-          <div className="bento-card col-span-1 flex flex-col justify-between rounded-[32px] bg-white/[0.03] border border-white/10 p-8 shadow-xl relative overflow-hidden">
+          <div className="bento-card col-span-1 flex flex-col justify-between rounded-[32px] bg-white/[0.03] border border-white/10 p-8 shadow-xl relative overflow-hidden transition-transform duration-300 hover:scale-[1.015]">
             <div className="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
               <Code2 className="w-48 h-48 text-[var(--lime)]" />
             </div>
@@ -125,7 +109,7 @@ export function About() {
           </div>
 
           {/* CARD 4: Location & Status */}
-          <div className="bento-card col-span-1 flex flex-col justify-between rounded-[32px] bg-white/[0.03] border border-white/10 p-8 shadow-xl relative overflow-hidden">
+          <div className="bento-card col-span-1 flex flex-col justify-between rounded-[32px] bg-white/[0.03] border border-white/10 p-8 shadow-xl relative overflow-hidden transition-transform duration-300 hover:scale-[1.015]">
             <div className="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
               <Globe className="w-48 h-48 text-[var(--lime)]" />
             </div>

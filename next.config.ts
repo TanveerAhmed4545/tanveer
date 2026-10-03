@@ -5,7 +5,10 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  compress: true,
   images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
     remotePatterns: [
       {
         protocol: "https",
@@ -23,6 +26,9 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
+  },
+  experimental: {
+    optimizePackageImports: ["lucide-react", "date-fns", "clsx", "tailwind-merge"],
   },
 };
 

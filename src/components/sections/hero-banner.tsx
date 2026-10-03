@@ -245,7 +245,7 @@ export function HeroBanner() {
             fill
             priority
             className="object-contain object-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.6)] contrast-110 saturate-[1.1]"
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 70vw, 650px"
           />
         </div>
       </div>
