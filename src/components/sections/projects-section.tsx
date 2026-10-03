@@ -7,7 +7,7 @@ import { projects } from "@/data/portfolio.data";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap-registry";
 
-const DURATION = 6000; // 6s per slide
+const DURATION = 7000; // 7s per slide
 
 export function Projects() {
   const containerRef = useRef<HTMLElement>(null);
@@ -20,7 +20,8 @@ export function Projects() {
   const tabletRect = useRef<DOMRect | null>(null);
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isInView, setIsInView] = useState(true);
+  const [isTabletHovered, setIsTabletHovered] = useState(false);
   const [filter, setFilter] = useState<"Shopify" | "Squarespace" | "Custom">("Squarespace");
 
   const filteredProjects = projects.filter((project) => {
@@ -35,6 +36,19 @@ export function Projects() {
     setFilter(newFilter);
     setActiveIndex(0); // Reset to first project in new filtered list
   };
+
+  // Track section visibility to pause when out of view and save battery/CPU
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   // Touch coordinates for mobile swipe
   const touchStartX = useRef<number | null>(null);
@@ -53,16 +67,16 @@ export function Projects() {
     setActiveIndex(index);
   }, []);
 
-  // Zero-overhead Auto-advance timer: ticks ONLY once every 6s, zero intermediate re-renders
+  // Auto-advance timer: ticks smoothly every 7s when in view and not paused on tablet screen
   useEffect(() => {
-    if (isPaused || filteredProjects.length <= 1) return;
+    if (!isInView || isTabletHovered || filteredProjects.length <= 1) return;
 
     const timer = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % filteredProjects.length);
     }, DURATION);
 
     return () => clearInterval(timer);
-  }, [isPaused, activeIndex, filteredProjects.length]);
+  }, [isInView, isTabletHovered, activeIndex, filter, filteredProjects.length]);
 
   // Keyboard navigation support (ArrowLeft / ArrowRight)
   useEffect(() => {
@@ -156,16 +170,11 @@ export function Projects() {
     }
   }, { scope: containerRef });
 
-  // Cache bounding rect once on mouse enter to eliminate layout thrashing
-  const handleMouseEnter = () => {
-    setIsPaused(true);
-    if (tabletFrameRef.current) {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!tabletFrameRef.current || !quickRotateX.current || !quickRotateY.current) return;
+    if (!tabletRect.current) {
       tabletRect.current = tabletFrameRef.current.getBoundingClientRect();
     }
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!tabletRect.current || !quickRotateX.current || !quickRotateY.current) return;
     const rect = tabletRect.current;
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
@@ -173,13 +182,8 @@ export function Projects() {
     quickRotateY.current(x * 12);
   };
 
-  const handleMouseLeave = () => {
-    setIsPaused(false);
-    quickRotateX.current?.(0);
-    quickRotateY.current?.(0);
-  };
-
-  const activeProject = filteredProjects[activeIndex] || projects[0];
+  const safeActiveIndex = activeIndex < filteredProjects.length ? activeIndex : 0;
+  const activeProject = filteredProjects[safeActiveIndex] || projects[0];
   const yearString = activeProject.date.split(" ").pop() || "2026";
   const yearFirstPart = yearString.slice(0, 2);
   const yearSecondPart = yearString.slice(2);
@@ -189,8 +193,6 @@ export function Projects() {
       ref={containerRef}
       id="projects"
       className="relative w-full bg-[#0d0d0f] text-foreground py-20 sm:py-28 md:py-36 overflow-hidden select-none font-sans"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
       {/* Subtle Ambient Radial Glow (Hardware-accelerated radial gradients without expensive CSS blur) */}
       <div
@@ -243,7 +245,7 @@ export function Projects() {
             className="flex flex-col gap-1 sm:gap-2 my-auto py-4"
           >
             {filteredProjects.map((project, idx) => {
-              const isActive = idx === activeIndex;
+              const isActive = idx === safeActiveIndex;
               return (
                 <div
                   key={project.slug}
@@ -365,7 +367,16 @@ export function Projects() {
         {/* ── RIGHT COLUMN: EPIC TABLET MOCKUP IN ROCKY TERRAIN & YEAR ── */}
         <div
           className="col-span-1 lg:col-span-7 relative flex items-center justify-center py-8 sm:py-14"
+          onMouseEnter={() => {
+            if (tabletFrameRef.current) {
+              tabletRect.current = tabletFrameRef.current.getBoundingClientRect();
+            }
+          }}
           onMouseMove={handleMouseMove}
+          onMouseLeave={() => {
+            quickRotateX.current?.(0);
+            quickRotateY.current?.(0);
+          }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -406,12 +417,14 @@ export function Projects() {
                 target="_blank"
                 rel="noopener noreferrer"
                 title={`Open ${activeProject.name} Live Site`}
+                onMouseEnter={() => setIsTabletHovered(true)}
+                onMouseLeave={() => setIsTabletHovered(false)}
                 className="relative block w-full h-full rounded-[16px] sm:rounded-[22px] md:rounded-[28px] overflow-hidden bg-[#08080a] border border-white/10 cursor-pointer group/screen"
               >
                 
-                {/* Render All Project Images with Crossfade */}
+                {/* Render All Project Images with Crossfade and Auto Image Scroll */}
                 {filteredProjects.map((proj, idx) => {
-                  const isCurrent = idx === activeIndex;
+                  const isCurrent = idx === safeActiveIndex;
                   return (
                     <div
                       key={proj.slug}
@@ -422,11 +435,12 @@ export function Projects() {
                       }`}
                     >
                       <Image
+                        key={`${proj.slug}-${isCurrent ? "active" : "inactive"}`}
                         src={proj.image}
                         alt={proj.imageAlt || proj.name}
                         fill
                         sizes="(max-width: 768px) 100vw, 850px"
-                        className="object-cover project-img-scroll"
+                        className={`object-cover ${isCurrent ? "animate-project-scroll" : "object-top"}`}
                         priority={idx === 0}
                       />
 
@@ -537,7 +551,7 @@ export function Projects() {
         <div className="flex flex-col items-center gap-2.5">
           <div className="flex items-center gap-2.5 bg-white/[0.04] px-4 py-2 rounded-full border border-white/10 backdrop-blur-sm">
             {filteredProjects.map((proj, idx) => {
-              const isActive = idx === activeIndex;
+              const isActive = idx === safeActiveIndex;
               return (
                 <button
                   key={proj.slug}
@@ -552,7 +566,7 @@ export function Projects() {
               );
             })}
             <div className="ml-2 pl-2 border-l border-white/20 flex items-center gap-1 text-[11px] text-white/50">
-              <span className="text-[var(--lime)] font-bold">{String(activeIndex + 1).padStart(2, "0")}</span>
+              <span className="text-[var(--lime)] font-bold">{String(safeActiveIndex + 1).padStart(2, "0")}</span>
               <span>/</span>
               <span>{String(filteredProjects.length).padStart(2, "0")}</span>
             </div>
@@ -561,10 +575,10 @@ export function Projects() {
           {/* Micro Progress Bar (GPU Keyframe animation, zero React re-renders) */}
           <div className="w-36 sm:w-48 h-0.5 bg-white/10 rounded-full overflow-hidden">
             <div
-              key={activeIndex}
+              key={`${filter}-${safeActiveIndex}`}
               className="h-full w-full bg-[var(--lime)] shadow-[0_0_8px_rgba(201,226,101,0.8)] animate-progress-fill"
               style={{
-                animationPlayState: isPaused ? "paused" : "running",
+                animationPlayState: isTabletHovered || !isInView ? "paused" : "running",
               }}
             />
           </div>

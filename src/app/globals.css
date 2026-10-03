@@ -487,15 +487,30 @@
   }
 }
 
-/* Smooth scrolling effect for long project screenshots on hover */
-@media (hover: hover) and (pointer: fine) {
-  .project-img-scroll {
-    object-position: top;
-    transition: object-position 5s ease-in-out, transform 0.7s ease-out, filter 0.7s ease-out;
+/* Automatic smooth scrolling through project screenshot in tablet mockup */
+@keyframes projectAutoScroll {
+  0% {
+    object-position: 50% 0%;
   }
-  .group:hover .project-img-scroll {
-    object-position: bottom;
+  12% {
+    object-position: 50% 0%;
   }
+  85% {
+    object-position: 50% 100%;
+  }
+  100% {
+    object-position: 50% 100%;
+  }
+}
+
+.animate-project-scroll {
+  object-position: 50% 0%;
+  animation: projectAutoScroll 7s cubic-bezier(0.42, 0, 0.58, 1) forwards;
+  will-change: object-position;
+}
+
+.group\/screen:hover .animate-project-scroll {
+  animation-play-state: paused;
 }
 
 /* Year typography smooth slide transition */
@@ -525,7 +540,7 @@
 }
 
 .animate-progress-fill {
-  animation: progressFill 6s linear forwards;
+  animation: progressFill 7s linear forwards;
   transform-origin: left;
   will-change: transform;
 }
