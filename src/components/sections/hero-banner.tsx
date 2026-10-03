@@ -155,7 +155,7 @@ export function HeroBanner() {
                   src={currentProject.image}
                   alt={currentProject.name}
                   fill
-                  className="object-cover transition-all duration-700 ease-out hover:scale-105"
+                  className="object-cover object-top transition-[object-position,transform] duration-[3000ms] ease-in-out hover:object-bottom hover:scale-105"
                   sizes="290px"
                 />
 
