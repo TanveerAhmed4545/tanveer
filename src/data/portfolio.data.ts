@@ -26,15 +26,15 @@ export const profile = {
 export const about = {
   opening: "Hello there!",
   paragraphs: [
-    "I'm a Senior Web Developer based in Dhaka, Bangladesh, with a proven track record of delivering over 220+ production web applications and client platforms. My expertise spans custom full-stack applications as well as high-converting CMS platforms including Shopify, Squarespace, and Wix.",
-    "Over my career, I have engineered and launched 150+ Shopify stores, 50+ Squarespace websites, 15+ custom full-stack applications (React, Node, MongoDB), and 5+ Wix portals. I specialize in clean architecture, responsive UI/UX design, and production-grade security — from JWT-protected private routes to custom Stripe payment integrations.",
+    "I'm a Senior Web Developer based in Dhaka, Bangladesh, with a proven track record of delivering over 290+ production web applications and client platforms. My expertise spans custom full-stack applications as well as high-converting CMS platforms including Shopify, Squarespace, and Wix.",
+    "Over my career, I have engineered and launched 150+ Shopify stores, 120+ Squarespace websites, 15+ custom full-stack applications (React, Node, MongoDB), and 5+ Wix portals. I specialize in clean architecture, responsive UI/UX design, and production-grade security — from JWT-protected private routes to custom Stripe payment integrations.",
     "Currently serving as Team Lead at SM Technology, I oversee web development initiatives, mentor developers, and drive project delivery. Whether it's building a custom web application from scratch or tailoring a Shopify theme for maximum conversions, I bring a commitment to quality and modern design to every project.",
   ],
 };
 
 export const stats = [
   { value: 150, suffix: "+", label: "Shopify Stores", description: "Custom themes, high-converting storefronts, and 3rd party integrations" },
-  { value: 50, suffix: "+", label: "Squarespace Sites", description: "Tailored business platforms, UI/UX enhancements, and client delivery" },
+  { value: 120, suffix: "+", label: "Squarespace Sites", description: "Tailored business platforms, UI/UX enhancements, and client delivery" },
   { value: 15, suffix: "+", label: "Custom Websites", description: "Full-stack React, Node.js, Express, and MongoDB web applications" },
   { value: 5, suffix: "+", label: "Wix Websites", description: "Dynamic client portals and rapid business storefront launches" },
 ];
@@ -48,7 +48,7 @@ export const experience = [
     period: "Apr 2026 — Present · 4 mos",
     type: "Full-time",
     description:
-      "Promoted to Team Lead to oversee front-end and web development initiatives. Mentoring junior developers, reviewing code quality, and driving project delivery across 50+ Squarespace platforms and custom client web applications.",
+      "Promoted to Team Lead to oversee front-end and web development initiatives. Mentoring junior developers, reviewing code quality, and driving project delivery across 120+ Squarespace platforms and custom client web applications.",
     stack: ["Squarespace", "Team Leadership", "Project Management", "React.js", "UI/UX"],
   },
   {
